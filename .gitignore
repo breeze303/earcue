@@ -1,10 +1,24 @@
+# Swift
+.build/
+.swiftpm/
+dist/
+build/
+*.dSYM
+*.icns
+
+# Python legacy
 venv/
 __pycache__/
 *.pyc
-.DS_Store
 *.egg-info/
-dist/
-build/
+
+# Manual test binaries
+tools/test_engine
+tools/test_engine_asan
+tools/test_feedback
+tools/*.dSYM
+
+# macOS
+.DS_Store
 .audiomonitor.lock
 *.spec
-*.icns

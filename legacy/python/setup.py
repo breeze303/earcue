@@ -20,7 +20,7 @@ OPTIONS = {
         'NSHighResolutionCapable': True,
         'NSMicrophoneUsageDescription': 'Hear Yourself needs microphone access to pass audio through to your speakers.',
     },
-    'packages': ['rumps', 'sounddevice', 'numpy'],
+    'packages': ['rumps', 'sounddevice', 'numpy', '_sounddevice_data'],
 }
 
 setup(

@@ -1,67 +1,76 @@
-# Hear Yourself 🎙
+# EarCue 耳返
 
-A free, low-latency audio monitor for macOS. Hear your microphone through your speakers/headphones in real-time.
+A native, low-latency macOS audio monitor. Hear your microphone through headphones or speakers, with feedback suppression, adaptive noise reduction, reverb, EQ, and a menu bar controller.
 
-**[Download for macOS →](https://github.com/gabrycina/hear-yourself/releases/latest)**
-
-![Screenshot](screenshot.png)
+![EarCue](docs/native-screenshot.png)
 
 ## Features
 
-- **Low latency** - As low as ~1.3ms delay
-- **Menu bar app** - Lives quietly in your menu bar
-- **Live device switching** - Change input/output without restart
-- **Free & open source** - No ads, no subscriptions
+- **Native app** — SwiftUI UI + Core Audio **AUHAL** engine, no Python or PortAudio
+- **Low latency** — 16 / 32 / 64 / 128 / 256-frame buffers, 44.1 / 48 / 96 kHz
+- **Adaptive feedback suppression** — 48-band Goertzel howl detection, 4 adaptive notches, 3 sensitivity levels
+- **Adaptive noise reduction** — 80 Hz high-pass + noise-floor-tracking soft expander, no added latency
+- **Tone** — 3-band EQ, compressor, always-on safety limiter
+- **Reverb** — Room / Hall / Large Hall, live wet control
+- **Gain & mute** — input gain, output volume, global `⌃⌥M` mute shortcut
+- **Meters** — smoothed dBFS input/output meters, peak hold, clip and overload diagnostics
+- **Scenes** — 播客 / 唱歌 / 游戏 / 会议 presets
+- **Native device handling** — Core Audio hotplug listeners, no polling
+- **Menu bar popover** — start/stop, mute, volume, devices, scenes, Show Window
+- **Launch at login** — `SMAppService`
+- **macOS 26/27 Liquid Glass** — glass cards and buttons with a material fallback on older systems
 
-## Why?
+## Build & run
 
-The popular tool [LineIn](https://rogueamoeba.com/legacy/) was discontinued in 2017 and doesn't work on modern macOS. Paid alternatives cost $50-120. We made a free one.
+Requirements: macOS 14 or later, Xcode Command Line Tools.
 
-## Use Cases
-
-- Test your microphone setup
-- Monitor yourself while recording podcasts
-- Hear yourself while streaming
-- Practice singing or speaking
-- Reduce audio delay when gaming
-
-## Installation
-
-### Option 1: Download the App (Recommended)
-1. Download `HearYourself.app.zip` from [Releases](https://github.com/gabrycina/hear-yourself/releases/latest)
-2. Unzip and drag to Applications
-3. Double-click to run
-4. Look for 🎙 in your menu bar
-
-### Option 2: Run from Source
 ```bash
-git clone https://github.com/gabrycina/hear-yourself.git
-cd hear-yourself
+git clone https://github.com/breeze303/earcue.git
+cd earcue
+./build_app.sh
+open "dist/EarCue.app"
+```
+
+The app is ad-hoc signed locally. If macOS blocks the first launch, right-click the app and choose **Open**, or run:
+
+```bash
+xattr -cr "dist/EarCue.app"
+```
+
+On first **Start Monitoring**, macOS will ask for microphone access. Allow it.
+
+## Controls
+
+- **场景** — 播客 / 唱歌 / 游戏 / 会议 / 自定义
+- **设备** — choose Core Audio input/output; **刷新设备** for manual refresh
+- **延迟** — buffer size and sample rate
+- **增益与音量** — input gain, output volume, mute (`⌃⌥M`)
+- **清理** — high-pass, adaptive noise reduction threshold, feedback suppression + sensitivity
+- **音色** — 3-band EQ (120 Hz / 1 kHz / 6 kHz), compressor threshold/ratio
+- **混响** — Off / Room / Hall / Large Hall, Mix
+- **诊断** — overloads, clipped samples, feedback notches, callbacks, actual buffer
+- **底部操作栏** — Start / Stop Monitoring is always visible
+
+## Feedback suppression and noise reduction
+
+Feedback suppression is **off by default**, because aggressive detection can notch sustained musical tones. Enable it in **清理 → 反馈抑制** and start with **中** sensitivity. The diagnostics panel shows how many notches are currently active.
+
+The noise reduction is a **time-domain adaptive expander** with noise-floor tracking; it adds no latency. It is not a spectral denoiser. A spectral denoiser would add roughly 10 ms of latency.
+
+## Legacy Python version
+
+The original Python/rumps implementation is kept under `legacy/python/`:
+
+```bash
+cd legacy/python
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python3 app.py
 ```
 
-## Usage
+It uses [sounddevice](https://python-sounddevice.readthedocs.io/) (PortAudio) and [rumps](https://github.com/jaredks/rumps). The native app above is the recommended version.
 
-1. Click the 🎙 icon in your menu bar
-2. Select your input device (microphone)
-3. Select your output device (speakers/headphones)
-4. Click "Start Monitoring"
-5. Adjust latency if needed (lower = less delay, but may cause glitches)
+## Credits
 
-## Requirements
-
-- macOS 10.13 or later
-- Microphone access permission
-
-## Tech Stack
-
-- Python 3
-- [sounddevice](https://python-sounddevice.readthedocs.io/) (PortAudio bindings)
-- [rumps](https://github.com/jaredks/rumps) (macOS menu bar framework)
-
----
-
-Made with ♥ by [Gabrycina](https://github.com/gabrycina) & Claude Opus
+EarCue is a native rewrite based on [Hear Yourself](https://github.com/gabrycina/hear-yourself) by Gabrycina & Claude Opus. The legacy Python code retains its original attribution.
