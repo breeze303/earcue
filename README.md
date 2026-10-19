@@ -2,6 +2,8 @@
 
 A native, low-latency macOS audio monitor. Hear your microphone through headphones or speakers, with feedback suppression, adaptive noise reduction, reverb, EQ, and a menu bar controller.
 
+**[Download EarCue for macOS](https://github.com/breeze303/earcue/releases/latest)** · macOS 14+
+
 ![EarCue](docs/native-screenshot.png)
 
 ## Features
@@ -31,7 +33,7 @@ cd earcue
 open "dist/EarCue.app"
 ```
 
-The app is ad-hoc signed locally. If macOS blocks the first launch, right-click the app and choose **Open**, or run:
+The release build is ad-hoc signed and not notarized. If macOS blocks the first launch, right-click the app and choose **Open**, or run:
 
 ```bash
 xattr -cr "dist/EarCue.app"
